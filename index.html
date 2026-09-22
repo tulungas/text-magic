@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111827">
+<title>Text Magic - Text Style Generator</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg1: #0f172a;
+    --bg2: #1e1b4b;
+    --card: rgba(255,255,255,.08);
+    --border: rgba(255,255,255,.12);
+    --text: #ffffff;
+    --muted: #a5a5b5;
+    --accent1: #8b5cf6;
+    --accent2: #ec4899;
+}
+
+body {
+    min-height: 100vh;
+    padding: 18px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--text);
+    background:
+        radial-gradient(circle at 10% 10%, rgba(139,92,246,.25), transparent 30%),
+        radial-gradient(circle at 90% 90%, rgba(236,72,153,.18), transparent 30%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+}
+
+.container {
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+/* HEADER */
+
+.header {
+    text-align: center;
+    padding: 20px 10px 25px;
+}
+
+.logo {
+    width: 72px;
+    height: 72px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 22px;
+    font-size: 35px;
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    box-shadow: 0 15px 40px rgba(139,92,246,.35);
+}
+
+h1 {
+    margin-top: 15px;
+    font-size: 31px;
+}
+
+.subtitle {
+    margin-top: 7px;
+    color: var(--muted);
+    font-size: 15px;
+}
+
+/* CARD */
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 20px;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 25px 70px rgba(0,0,0,.28);
+}
+
+/* MODE */
+
+.mode-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #d7d7e2;
+    margin-bottom: 10px;
+}
+
+.modes {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 7px;
+    scrollbar-width: thin;
+}
+
+.modes::-webkit-scrollbar {
+    height: 4px;
+}
+
+.modes::-webkit-scrollbar-thumb {
+    background: #666;
+    border-radius: 10px;
+}
+
+.mode {
+    flex: 0 0 auto;
+    border: 1px solid rgba(255,255,255,.1);
+    background: rgba(0,0,0,.2);
+    color: #d8d8e2;
+    padding: 10px 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    transition: .2s;
+}
+
+.mode:hover {
+    background: rgba(255,255,255,.1);
+}
+
+.mode.active {
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    color: white;
+    border-color: transparent;
+}
+
+/* INPUT */
+
+.section {
+    margin-top: 20px;
+}
+
+.label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+label {
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.counter {
+    color: #858597;
+    font-size: 12px;
+}
+
+textarea {
+    width: 100%;
+    min-height: 145px;
+    resize: vertical;
+    padding: 16px;
+    outline: none;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,.13);
+    background: rgba(0,0,0,.25);
+    color: white;
+    font-size: 17px;
+    line-height: 1.55;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+textarea:focus {
+    border-color: #a78bfa;
+    box-shadow: 0 0 0 3px rgba(139,92,246,.1);
+}
+
+textarea::placeholder {
+    color: #747487;
+}
+
+/* OUTPUT */
+
+.output-box {
+    min-height: 145px;
+    padding: 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,.13);
+    background: rgba(0,0,0,.25);
+    color: white;
+    font-size: 20px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.empty {
+    color: #747487;
+    font-size: 16px;
+}
+
+/* BUTTONS */
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+button {
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 15px;
+    transition: .2s;
+}
+
+button:active {
+    transform: scale(.97);
+}
+
+.copy-btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 13px;
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    box-shadow: 0 8px 20px rgba(139,92,246,.2);
+}
+
+.clear-btn {
+    padding: 14px 22px;
+    border-radius: 13px;
+    background: #29293b;
+}
+
+.swap-btn {
+    padding: 14px 18px;
+    border-radius: 13px;
+    background: #29293b;
+}
+
+/* INFO */
+
+.info {
+    margin-top: 16px;
+    padding: 13px;
+    border-radius: 13px;
+    background: rgba(139,92,246,.08);
+    color: #bdb2ff;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* TOAST */
+
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: 25px;
+    transform: translate(-50%, 100px);
+    opacity: 0;
+    pointer-events: none;
+    padding: 13px 20px;
+    border-radius: 12px;
+    background: #22c55e;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 10px 30px rgba(0,0,0,.3);
+    transition: .3s;
+    z-index: 100;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 10px;
+    }
+
+    .header {
+        padding-top: 12px;
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+
+    .card {
+        padding: 15px;
+        border-radius: 20px;
+    }
+
+    .buttons {
+        flex-wrap: wrap;
+    }
+
+    .copy-btn {
+        min-width: 100%;
+    }
+
+    .clear-btn,
+    .swap-btn {
+        flex: 1;
+    }
+
+    textarea,
+    .output-box {
+        min-height: 125px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header class="header">
+        <div class="logo">✨</div>
+        <h1>Text Magic</h1>
+        <p class="subtitle">
+            Transform your text into cool styles
+        </p>
+    </header>
+
+    <main class="card">
+
+        <div class="mode-title">Choose a style</div>
+
+        <div class="modes">
+
+            <button class="mode active" data-mode="upside">
+                🙃 Upside Down
+            </button>
+
+            <button class="mode" data-mode="reverse">
+                🔄 Reverse
+            </button>
+
+            <button class="mode" data-mode="both">
+                🔁 Reverse + Upside
+            </button>
+
+            <button class="mode" data-mode="uppercase">
+                🔠 UPPERCASE
+            </button>
+
+            <button class="mode" data-mode="lowercase">
+                🔡 lowercase
+            </button>
+
+            <button class="mode" data-mode="alternating">
+                Aa aLtErNaTe
+            </button>
+
+            <button class="mode" data-mode="smallcaps">
+                ✨ Small Caps
+            </button>
+
+            <button class="mode" data-mode="circled">
+                ⓒ Circled
+            </button>
+
+            <button class="mode" data-mode="fullwidth">
+                Ｗ Fullwidth
+            </button>
+
+            <button class="mode" data-mode="nospace">
+                🚫 No Spaces
+            </button>
+
+            <button class="mode" data-mode="reversewords">
+                🔀 Reverse Words
+            </button>
+
+            <button class="mode" data-mode="strikethrough">
+                S̶t̶r̶i̶k̶e̶
+            </button>
+
+        </div>
+
+        <!-- INPUT -->
+
+        <section class="section">
+
+            <div class="label-row">
+                <label>Your Text</label>
+                <span class="counter">
+                    <span id="counter">0</span> / 5000
+                </span>
+            </div>
+
+            <textarea
+                id="input"
+                maxlength="5000"
+                placeholder="Type or paste your text here..."
+            ></textarea>
+
+        </section>
+
+        <!-- OUTPUT -->
+
+        <section class="section">
+
+            <div class="label-row">
+                <label id="outputTitle">Upside Down</label>
+            </div>
+
+            <div class="output-box" id="output">
+                <span class="empty">
+                    Your converted text will appear here...
+                </span>
+            </div>
+
+        </section>
+
+        <!-- BUTTONS -->
+
+        <div class="buttons">
+
+            <button class="copy-btn" onclick="copyResult()">
+                📋 Copy
+            </button>
+
+            <button class="swap-btn" onclick="swapText()">
+                ⇅ Swap
+            </button>
+
+            <button class="clear-btn" onclick="clearAll()">
+                🗑 Clear
+            </button>
+
+        </div>
+
+        <div class="info">
+            💡 The generated text uses Unicode characters where possible,
+            so you can copy and paste it into WhatsApp, Instagram,
+            Telegram, Facebook and other apps.
+        </div>
+
+    </main>
+
+</div>
+
+<div class="toast" id="toast">✓ Copied!</div>
+
+
+<script>
+
+/* =========================================
+   CHARACTER MAPS
+========================================= */
+
+const upsideNormal =
+"a b c d e f g h i j k l m n o p q r s t u v w x y z" +
+"A B C D E F G H I J K L M N O P Q R S T U V W X Y Z" +
+"0 1 2 3 4 5 6 7 8 9";
+
+const upsideChars =
+"ɐ q ɔ p ǝ ɟ ƃ ɥ ᴉ ɾ ʞ ʃ ɯ u o d b ɹ s ʇ ʊ ʌ ʍ x ʎ z" +
+"∀ B Ɔ D Ǝ Ⅎ G H I J ʞ ⅃ M N O Ԁ Q R S ┴ ∩ ∀ M X ⅄ Z" +
+"0 Ɩ ᄅ Ɛ ㄣ S 9 L 8 6";
+
+const upsideMap = {};
+
+const normalArray = upsideNormal.split(" ");
+const upsideArray = upsideChars.split(" ");
+
+for (let i = 0; i < normalArray.length; i++) {
+    upsideMap[normalArray[i]] = upsideArray[i];
+}
+
+/* Extra symbols */
+
+upsideMap["."] = "˙";
+upsideMap["?"] = "¿";
+upsideMap["!"] = "¡";
+upsideMap["'"] = ",";
+upsideMap[","] = "'";
+upsideMap["("] = ")";
+upsideMap[")"] = "(";
+upsideMap["["] = "]";
+upsideMap["]"] = "[";
+upsideMap["{"] = "}";
+upsideMap["}"] = "{";
+upsideMap["<"] = ">";
+upsideMap[">"] = "<";
+upsideMap[" "] = " ";
+upsideMap["\n"] = "\n";
+
+
+/* =========================================
+   SMALL CAPS
+========================================= */
+
+const smallCaps = {
+
+    a:"ᴀ", b:"ʙ", c:"ᴄ", d:"ᴅ", e:"ᴇ",
+    f:"ꜰ", g:"ɢ", h:"ʜ", i:"ɪ", j:"ᴊ",
+    k:"ᴋ", l:"ʟ", m:"ᴍ", n:"ɴ", o:"ᴏ",
+    p:"ᴘ", q:"ǫ", r:"ʀ", s:"s", t:"ᴛ",
+    u:"ᴜ", v:"ᴠ", w:"ᴡ", x:"x", y:"ʏ",
+    z:"ᴢ"
+
+};
+
+
+/* =========================================
+   CIRCLED
+========================================= */
+
+const circledLower = {
+    a:"ⓐ", b:"ⓑ", c:"ⓒ", d:"ⓓ", e:"ⓔ",
+    f:"ⓕ", g:"ⓖ", h:"ⓗ", i:"ⓘ", j:"ⓙ",
+    k:"ⓚ", l:"ⓛ", m:"ⓜ", n:"ⓝ", o:"ⓞ",
+    p:"ⓟ", q:"ⓠ", r:"ⓡ", s:"ⓢ", t:"ⓣ",
+    u:"ⓤ", v:"ⓥ", w:"ⓦ", x:"ⓧ", y:"ⓨ",
+    z:"ⓩ"
+};
+
+const circledUpper = {
+    A:"Ⓐ", B:"Ⓑ", C:"Ⓒ", D:"Ⓓ", E:"Ⓔ",
+    F:"Ⓕ", G:"Ⓖ", H:"Ⓗ", I:"Ⓘ", J:"Ⓙ",
+    K:"Ⓚ", L:"Ⓛ", M:"Ⓜ", N:"Ⓝ", O:"Ⓞ",
+    P:"Ⓟ", Q:"Ⓠ", R:"Ⓡ", S:"Ⓢ", T:"Ⓣ",
+    U:"Ⓤ", V:"Ⓥ", W:"Ⓦ", X:"Ⓧ", Y:"Ⓨ",
+    Z:"Ⓩ"
+};
+
+const circledNumbers = {
+    "0":"⓪", "1":"①", "2":"②", "3":"③",
+    "4":"④", "5":"⑤", "6":"⑥", "7":"⑦",
+    "8":"⑧", "9":"⑨"
+};
+
+
+/* =========================================
+   FULLWIDTH
+========================================= */
+
+function fullwidth(text) {
+
+    let result = "";
+
+    for (let i = 0; i < text.length; i++) {
+
+        let code = text.charCodeAt(i);
+
+        if (code >= 33 && code <= 126) {
+            result += String.fromCharCode(code + 65248);
+        } else if (code === 32) {
+            result += "　";
+        } else {
+            result += text[i];
+        }
+    }
+
+    return result;
+}
+
+
+/* =========================================
+   UPSIDE DOWN
+========================================= */
+
+function upsideDown(text) {
+
+    let result = "";
+
+    for (let i = text.length - 1; i >= 0; i--) {
+
+        let char = text[i];
+
+        if (upsideMap[char] !== undefined) {
+            result += upsideMap[char];
+        } else {
+            result += char;
+        }
+    }
+
+    return result;
+}
+
+
+/* =========================================
+   SMALL CAPS
+========================================= */
+
+function makeSmallCaps(text) {
+
+    let result = "";
+
+    for (let i = 0; i < text.length; i++) {
+
+        let char = text[i];
+
+        let lower = char.toLowerCase();
+
+        if (smallCaps[lower]) {
+            result += smallCaps[lower];
+        } else {
+            result += char;
+        }
+    }
+
+    return result;
+}
+
+
+/* =========================================
+   CIRCLED
+========================================= */
+
+function makeCircled(text) {
+
+    let result = "";
+
+    for (let i = 0; i < text.length; i++) {
+
+        let char = text[i];
+
+        if (circledUpper[char]) {
+            result += circledUpper[char];
+        }
+        else if (circledLower[char]) {
+            result += circledLower[char];
+        }
+        else if (circledNumbers[char]) {
+            result += circledNumbers[char];
+        }
+        else {
+            result += char;
+        }
+    }
+
+    return result;
+}
+
+
+/* =========================================
+   ALTERNATING
+========================================= */
+
+function alternating(text) {
+
+    let result = "";
+    let upper = true;
+
+    for (let i = 0; i < text.length; i++) {
+
+        let char = text[i];
+
+        if (/[a-zA-Z]/.test(char)) {
+
+            if (upper) {
+                result += char.toUpperCase();
+            } else {
+                result += char.toLowerCase();
+            }
+
+            upper = !upper;
+
+        } else {
+
+            result += char;
+        }
+    }
+
+    return result;
+}
+
+
+/* =========================================
+   STRIKETHROUGH
+========================================= */
+
+function strike(text) {
+
+    let result = "";
+
+    for (let i = 0; i < text.length; i++) {
+
+        let char = text[i];
+
+        if (char === "\n" || char === " ") {
+            result += char;
+        } else {
+            result += char + "\u0336";
+        }
+    }
+
+    return result;
+}
+
+
+/* =========================================
+   REVERSE WORDS
+========================================= */
+
+function reverseWords(text) {
+
+    return text
+        .split(/(\s+)/)
+        .filter(function(item) {
+            return item !== "";
+        })
+        .reverse()
+        .join("");
+}
+
+
+/* =========================================
+   CONVERTER
+========================================= */
+
+function convert(text, mode) {
+
+    switch (mode) {
+
+        case "upside":
+            return upsideDown(text);
+
+        case "reverse":
+            return text.split("").reverse().join("");
+
+        case "both":
+            return upsideDown(text);
+
+        case "uppercase":
+            return text.toUpperCase();
+
+        case "lowercase":
+            return text.toLowerCase();
+
+        case "alternating":
+            return alternating(text);
+
+        case "smallcaps":
+            return makeSmallCaps(text);
+
+        case "circled":
+            return makeCircled(text);
+
+        case "fullwidth":
+            return fullwidth(text);
+
+        case "nospace":
+            return text.replace(/\s+/g, "");
+
+        case "reversewords":
+            return reverseWords(text);
+
+        case "strikethrough":
+            return strike(text);
+
+        default:
+            return text;
+    }
+}
+
+
+/* =========================================
+   MODE NAMES
+========================================= */
+
+const modeNames = {
+
+    upside: "Upside Down",
+    reverse: "Reverse",
+    both: "Reverse + Upside Down",
+    uppercase: "UPPERCASE",
+    lowercase: "lowercase",
+    alternating: "Alternating",
+    smallcaps: "Small Caps",
+    circled: "Circled",
+    fullwidth: "Fullwidth",
+    nospace: "No Spaces",
+    reversewords: "Reverse Words",
+    strikethrough: "Strikethrough"
+
+};
+
+
+/* =========================================
+   VARIABLES
+========================================= */
+
+const input = document.getElementById("input");
+const output = document.getElementById("output");
+const counter = document.getElementById("counter");
+const outputTitle = document.getElementById("outputTitle");
+
+let currentMode = "upside";
+
+
+/* =========================================
+   UPDATE
+========================================= */
+
+function updateOutput() {
+
+    const text = input.value;
+
+    counter.textContent = text.length;
+
+    outputTitle.textContent = modeNames[currentMode];
+
+    if (text.length === 0) {
+
+        output.innerHTML =
+            '<span class="empty">Your converted text will appear here...</span>';
+
+        return;
+    }
+
+    output.textContent = convert(text, currentMode);
+}
+
+
+/* =========================================
+   INPUT EVENT
+========================================= */
+
+input.addEventListener("input", function() {
+    updateOutput();
+});
+
+
+/* =========================================
+   MODE BUTTONS
+========================================= */
+
+const modeButtons = document.querySelectorAll(".mode");
+
+modeButtons.forEach(function(button) {
+
+    button.addEventListener("click", function() {
+
+        modeButtons.forEach(function(btn) {
+            btn.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        currentMode = button.getAttribute("data-mode");
+
+        updateOutput();
+
+    });
+
+});
+
+
+/* =========================================
+   COPY
+========================================= */
+
+function copyResult() {
+
+    const text = input.value;
+
+    if (text.length === 0) {
+        showToast("Type something first!");
+        return;
+    }
+
+    const result = convert(text, currentMode);
+
+    if (navigator.clipboard &&
+        window.isSecureContext) {
+
+        navigator.clipboard.writeText(result)
+            .then(function() {
+                showToast("✓ Copied to clipboard!");
+            })
+            .catch(function() {
+                fallbackCopy(result);
+            });
+
+    } else {
+
+        fallbackCopy(result);
+
+    }
+}
+
+
+/* =========================================
+   FALLBACK COPY
+========================================= */
+
+function fallbackCopy(text) {
+
+    const temp = document.createElement("textarea");
+
+    temp.value = text;
+
+    temp.style.position = "fixed";
+    temp.style.left = "-9999px";
+
+    document.body.appendChild(temp);
+
+    temp.focus();
+    temp.select();
+
+    try {
+
+        document.execCommand("copy");
+        showToast("✓ Copied to clipboard!");
+
+    } catch (error) {
+
+        showToast("Copy failed");
+
+    }
+
+    document.body.removeChild(temp);
+}
+
+
+/* =========================================
+   SWAP
+========================================= */
+
+function swapText() {
+
+    const result = convert(input.value, currentMode);
+
+    if (!result) {
+        showToast("Nothing to swap!");
+        return;
+    }
+
+    input.value = result;
+
+    updateOutput();
+
+    showToast("↕ Text swapped!");
+}
+
+
+/* =========================================
+   CLEAR
+========================================= */
+
+function clearAll() {
+
+    input.value = "";
+
+    updateOutput();
+
+    input.focus();
+
+}
+
+
+/* =========================================
+   TOAST
+========================================= */
+
+let toastTimeout;
+
+function showToast(message) {
+
+    const toast = document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    clearTimeout(toastTimeout);
+
+    toastTimeout = setTimeout(function() {
+
+        toast.classList.remove("show");
+
+    }, 1800);
+}
+
+</script>
+
+</body>
+</html>
